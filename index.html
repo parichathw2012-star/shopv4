@@ -1,97 +1,282 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#6d28d9">
-  <title>ระบบสแกนสหกรณ์</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <script src="https://parichathw2012-star.github.io/shopv4/js/CSS.js"></script>
-  <script src="https://parichathw2012-star.github.io/shopv4/js/Code.js"></script>
-  <script src="https://parichathw2012-star.github.io/shopv4/js/JavaScript.js"></script>
-  <?!= include('CSS'); ?>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ระบบสหกรณ์นักเรียน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<style>
+:root{--primary:#6d3fc2;--primary2:#8c62dc;--light:#f5f1ff;--blue:#38a8e8;--gold:#f3b73b;--text:#22253a;--muted:#70758a;--bg:#f7f8fc;--white:#fff;--danger:#e84d63;--success:#21a179;--border:#e8e9f0;--shadow:0 10px 28px rgba(49,42,84,.09)}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans Thai",sans-serif;color:var(--text);background:var(--bg)}
+button,input,select{font:inherit}.app{min-height:100vh}.nav{height:70px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:24px;padding:0 24px;position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--primary);white-space:nowrap}.brand-icon{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:white;display:grid;place-items:center;font-size:22px}.navlinks{display:flex;gap:6px}.navlinks button{border:0;background:transparent;color:#666b7e;padding:11px 15px;border-radius:12px;cursor:pointer;font-weight:600}.navlinks button.active,.navlinks button:hover{background:var(--light);color:var(--primary)}.navright{margin-left:auto;display:flex;align-items:center;gap:15px;color:var(--muted);font-size:14px}.user{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#eee9fb;color:var(--primary);font-weight:800}.hamb{display:none;border:0;background:var(--light);color:var(--primary);font-size:23px;border-radius:10px;width:42px;height:42px}
+main{max-width:1280px;margin:auto;padding:28px 24px 50px}.page{display:none}.page.active{display:block}.pagehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.pagehead h1{margin:0;font-size:27px}.pagehead p{margin:5px 0 0;color:var(--muted)}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:22px}.stat{display:flex;align-items:center;gap:16px}.stat-icon{width:55px;height:55px;border-radius:16px;display:grid;place-items:center;font-size:25px;background:var(--light);color:var(--primary)}.stat h3{margin:0;color:var(--muted);font-size:14px;font-weight:600}.stat .num{font-size:28px;font-weight:800;margin-top:3px}.section{margin-top:20px}.section h2{font-size:19px;margin:0 0 12px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:13px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}.table th{background:#fafaff;color:#666b7e;font-weight:700}.money{font-weight:800;color:var(--primary)}.btn{border:0;border-radius:12px;padding:11px 16px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:var(--primary);color:#fff}.btn.primary:hover{background:#5c32ae}.btn.secondary{background:var(--light);color:var(--primary)}.btn.success{background:#e8f8f2;color:#147b5c}.btn.danger{background:#fff0f2;color:#c6334c}.btn:disabled{opacity:.5;cursor:not-allowed}.toolbar{display:flex;gap:10px;flex-wrap:wrap}.input,.select{width:100%;border:1px solid #dfe1ea;background:#fff;border-radius:12px;padding:12px 13px;outline:none}.input:focus,.select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(109,63,194,.1)}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field label{display:block;font-size:13px;font-weight:700;margin:0 0 6px}.full{grid-column:1/-1}.searchbar{display:grid;grid-template-columns:1fr auto;gap:10px}.member-card{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.member-main h2{margin:0 0 5px}.member-meta{color:var(--muted);font-size:14px;line-height:1.8}.balancebox{background:linear-gradient(135deg,#f5f1ff,#f8fbff);border-radius:17px;padding:17px 25px;text-align:center;min-width:190px}.balancebox small{color:var(--muted)}.balancebox strong{display:block;font-size:31px;color:var(--primary)}.scanbox{text-align:center;padding:30px;border:2px dashed #d9d0ef;border-radius:20px;background:#fbfaff}.scanbox .big{font-size:45px}.scanbox h3{margin:7px 0}.scanbox p{color:var(--muted);margin:0 0 15px}.payment-items{display:grid;gap:10px}.itemrow{display:grid;grid-template-columns:1fr 120px 50px;gap:8px}.totalbar{display:flex;justify-content:flex-end;align-items:center;gap:18px;font-size:18px;margin-top:12px}.totalbar strong{font-size:29px;color:var(--primary)}.insufficient{border:1px solid #ffc7d0;background:#fff1f3;color:#b52e45;border-radius:14px;padding:13px;margin-top:12px;display:none}.receipt{background:#fff;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:500px;margin:auto;font-family:"Noto Sans Thai",sans-serif}.receipt h2{text-align:center;margin:0 0 5px}.receipt .center{text-align:center;color:#666}.receipt hr{border:0;border-top:1px dashed #aaa;margin:16px 0}.receipt table{width:100%;border-collapse:collapse}.receipt td{padding:5px 0}.receipt .right{text-align:right}.modal{position:fixed;inset:0;background:rgba(23,20,35,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.open{display:flex}.modalbox{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;padding:23px;box-shadow:0 30px 80px rgba(0,0,0,.2)}.modalhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.modalhead h2{margin:0}.close{border:0;background:#f1f2f6;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:20px}.qrviewer{text-align:center}.qrviewer canvas,.qrviewer img{max-width:100%;height:auto}.scanner-modal .modalbox{width:min(520px,100%)}#reader{width:100%;min-height:280px}.hint{color:var(--muted);font-size:13px}.empty{text-align:center;color:var(--muted);padding:35px}.badge{padding:4px 9px;border-radius:999px;background:#e9f8f2;color:#168260;font-size:12px;font-weight:700}.mobile-menu{display:none}.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:850px){.nav{padding:0 15px}.navlinks{display:none}.navright{display:none}.hamb{display:block;margin-left:auto}.mobile-menu{position:absolute;top:70px;left:0;right:0;background:#fff;border-bottom:1px solid var(--border);padding:10px 15px;box-shadow:var(--shadow)}.mobile-menu.open{display:grid}.mobile-menu button{border:0;background:white;text-align:left;padding:13px;border-radius:10px;font-weight:700}.grid3{grid-template-columns:1fr}.member-card{grid-template-columns:1fr}.balancebox{width:100%}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.searchbar{grid-template-columns:1fr}.pagehead{align-items:flex-start;gap:12px;flex-direction:column}.itemrow{grid-template-columns:1fr 100px 45px}}
+@media(max-width:500px){main{padding:20px 14px 40px}.card{padding:17px}.pagehead h1{font-size:23px}.btn{padding:11px 13px}.stat .num{font-size:24px}}
+@media print{body *{visibility:hidden!important}.printable,.printable *{visibility:visible!important}.printable{position:absolute;left:0;top:0;width:100%;padding:0!important}.no-print{display:none!important}}
+</style>
 </head>
 <body>
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon"><i class="fa-solid fa-school"></i></div>
-        <div>
-          <div class="brand-title">ระบบสแกนสหกรณ์</div>
-          <div class="brand-subtitle">ระบบกระเป๋าเงินนักเรียน | School Cooperative Wallet</div>
-        </div>
-      </div>
-      <div class="user-status">
-        <div><i class="fa-solid fa-user-shield"></i> เจ้าหน้าที่สหกรณ์</div>
-        <span class="online"><span class="dot"></span> ออนไลน์</span>
-      </div>
-    </header>
-
-    <nav class="nav">
-      <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-house"></i><span>หน้าแรก</span></button>
-      <button class="nav-item" data-page="members"><i class="fa-solid fa-users"></i><span>สมาชิก</span></button>
-      <button class="nav-item" data-page="topup"><i class="fa-solid fa-wallet"></i><span>เติมเงิน</span></button>
-      <button class="nav-item" data-page="payment"><i class="fa-solid fa-cart-shopping"></i><span>ชำระเงิน</span></button>
-    </nav>
-
-    <main class="container">
-      <section id="page-dashboard" class="page active">
-        <div class="page-head"><div><h1>ภาพรวมระบบ</h1><p>ติดตามสมาชิก ยอดเงิน และธุรกรรมของสหกรณ์</p></div><button class="btn secondary" onclick="refreshDashboard()"><i class="fa-solid fa-rotate"></i> รีเฟรช</button></div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-users"></i></div><div><div class="stat-label">จำนวนสมาชิก</div><div id="stat-members" class="stat-value">-</div></div></div>
-          <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-baht-sign"></i></div><div><div class="stat-label">ยอดเงินคงเหลือรวม</div><div id="stat-balance" class="stat-value">-</div></div></div>
-          <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-cart-shopping"></i></div><div><div class="stat-label">รายการชำระเงินวันนี้</div><div id="stat-payments" class="stat-value">-</div></div></div>
-          <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-chart-column"></i></div><div><div class="stat-label">ยอดขายวันนี้</div><div id="stat-sales" class="stat-value">-</div></div></div>
-        </div>
-        <div class="panel"><div class="panel-head"><h2>ธุรกรรมล่าสุด</h2></div><div class="table-wrap"><table><thead><tr><th>เวลา</th><th>รหัสสมาชิก</th><th>ชื่อสมาชิก</th><th>ประเภท</th><th>จำนวนเงิน</th><th>ยอดคงเหลือ</th></tr></thead><tbody id="recent-body"><tr><td colspan="6" class="empty">กำลังโหลด...</td></tr></tbody></table></div></div>
-      </section>
-
-      <section id="page-members" class="page">
-        <div class="page-head"><div><h1>สมาชิก</h1><p>สแกน QR Code หรือค้นหาสมาชิกด้วยรหัส/ชื่อ</p></div><button class="btn primary" onclick="openMemberModal()"><i class="fa-solid fa-plus"></i> เพิ่มสมาชิก</button></div>
-        <div class="two-col">
-          <div class="panel scanner-panel">
-            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> สแกน QR Code สมาชิก</h2></div>
-            <div id="scanner-members" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
-            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('members')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'members')"></label></div>
-            <div class="search-row"><input id="member-search" class="input" placeholder="พิมพ์รหัสสมาชิกหรือชื่อสมาชิก" onkeydown="if(event.key==='Enter') searchMembers()"><button class="btn secondary" onclick="searchMembers()"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
-          </div>
-          <div class="panel"><div class="panel-head"><h2>ผลการค้นหา</h2></div><div id="member-results" class="member-results"><div class="empty">ยังไม่มีข้อมูล กรุณาสแกนหรือค้นหา</div></div></div>
-        </div>
-        <div id="member-detail-panel" class="panel hidden"></div>
-      </section>
-
-      <section id="page-topup" class="page">
-        <div class="page-head"><div><h1>เติมเงินเข้ากระเป๋านักเรียน</h1><p>สแกน QR Code หรือค้นหาสมาชิก แล้วระบุจำนวนเงิน</p></div></div>
-        <div class="two-col">
-          <div class="panel scanner-panel">
-            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> ระบุสมาชิก</h2></div>
-            <div id="scanner-topup" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
-            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('topup')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'topup')"></label></div>
-            <div class="search-row"><input id="topup-search" class="input" placeholder="รหัสสมาชิก / ชื่อ" onkeydown="if(event.key==='Enter') selectBySearch('topup')"><button class="btn secondary" onclick="selectBySearch('topup')"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
-          </div>
-          <div class="panel transaction-card"><div class="panel-head"><h2>รายการเติมเงิน</h2></div><div id="topup-workspace"><div class="empty">กรุณาระบุสมาชิกก่อน</div></div></div>
-        </div>
-      </section>
-
-      <section id="page-payment" class="page">
-        <div class="page-head"><div><h1>ชำระเงิน</h1><p>สแกน QR Code แล้วหักเงินจากกระเป๋านักเรียน</p></div></div>
-        <div class="two-col">
-          <div class="panel scanner-panel">
-            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> ระบุสมาชิก</h2></div>
-            <div id="scanner-payment" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
-            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('payment')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'payment')"></label></div>
-            <div class="search-row"><input id="payment-search" class="input" placeholder="รหัสสมาชิก / ชื่อ" onkeydown="if(event.key==='Enter') selectBySearch('payment')"><button class="btn secondary" onclick="selectBySearch('payment')"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
-          </div>
-          <div class="panel transaction-card"><div class="panel-head"><h2>รายการชำระเงิน</h2></div><div id="payment-workspace"><div class="empty">กรุณาระบุสมาชิกก่อน</div></div></div>
-        </div>
-      </section>
-    </main>
+<div class="app">
+<nav class="nav">
+  <div class="brand"><div class="brand-icon">🏦</div><span>สหกรณ์นักเรียน</span></div>
+  <div class="navlinks">
+    <button data-page="dashboard" class="active">หน้าแรก</button>
+    <button data-page="members">สมาชิก</button>
+    <button data-page="topup">เติมเงิน</button>
+    <button data-page="payment">ชำระเงิน</button>
   </div>
+  <div class="navright"><span id="todayText"></span><div class="user">👤</div></div>
+  <button class="hamb" id="hamb">☰</button>
+  <div class="mobile-menu" id="mobileMenu">
+    <button data-page="dashboard">🏠 หน้าแรก</button>
+    <button data-page="members">👥 สมาชิก</button>
+    <button data-page="topup">💰 เติมเงิน</button>
+    <button data-page="payment">🛒 ชำระเงิน</button>
+  </div>
+</nav>
 
-  <div id="modal-root"></div>
-  <?!= include('JavaScript'); ?>
+<main>
+<section id="dashboard" class="page active">
+  <div class="pagehead"><div><h1>ภาพรวมระบบ</h1><p>ข้อมูลสหกรณ์นักเรียนจาก Google Sheets</p></div><button class="btn secondary" onclick="loadDashboard()">↻ รีเฟรช</button></div>
+  <div class="grid3">
+    <div class="card stat"><div class="stat-icon">👥</div><div><h3>จำนวนสมาชิก</h3><div class="num" id="memberCount">-</div></div></div>
+    <div class="card stat"><div class="stat-icon">💰</div><div><h3>ยอดเงินคงเหลือรวม</h3><div class="num" id="totalBalance">-</div></div></div>
+    <div class="card stat"><div class="stat-icon">🧾</div><div><h3>รายการชำระเงินวันนี้</h3><div class="num" id="todayPaymentCount">-</div></div></div>
+  </div>
+  <div class="section card"><h2>รายการชำระเงินล่าสุด</h2><div class="tablewrap"><table class="table"><thead><tr><th>เวลา</th><th>รหัสนักเรียน</th><th>ชื่อ-นามสกุล</th><th>รายการ</th><th>จำนวนเงิน</th></tr></thead><tbody id="recentPayments"></tbody></table></div></div>
+  <div class="section card"><h2>รายการเติมเงินล่าสุด</h2><div class="tablewrap"><table class="table"><thead><tr><th>เวลา</th><th>รหัสนักเรียน</th><th>ชื่อ-นามสกุล</th><th>จำนวนเงิน</th><th>คงเหลือ</th></tr></thead><tbody id="recentTopups"></tbody></table></div></div>
+</section>
+
+<section id="members" class="page">
+  <div class="pagehead"><div><h1>สมาชิก</h1><p>ค้นหา เพิ่มสมาชิก และจัดการ QR Code</p></div><button class="btn primary" onclick="openAddMember()">＋ เพิ่มสมาชิก</button></div>
+  <div class="card">
+    <div class="searchbar"><input class="input" id="memberSearch" placeholder="ค้นหาด้วยรหัสนักเรียน ชื่อ หรือระดับชั้น" oninput="renderMembers()"><button class="btn secondary" onclick="startScanner('members')">📷 สแกน QR</button></div>
+  </div>
+  <div id="selectedMemberWrap" class="section"></div>
+  <div class="section card"><h2>รายชื่อสมาชิก</h2><div class="tablewrap"><table class="table"><thead><tr><th>รหัสสมาชิก</th><th>รหัสนักเรียน</th><th>ชื่อ-นามสกุล</th><th>ชั้น</th><th>ยอดเงิน</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="membersTable"></tbody></table></div></div>
+</section>
+
+<section id="topup" class="page">
+  <div class="pagehead"><div><h1>เติมเงิน</h1><p>เติมเงินเข้าบัญชีสมาชิกโดยสแกน QR Code</p></div></div>
+  <div class="card scanbox"><div class="big">📷</div><h3>สแกน QR Code สมาชิก</h3><p>สแกนเพื่อดึงยอดเงินล่าสุดจาก Google Sheets</p><button class="btn primary" onclick="startScanner('topup')">เปิดกล้องสแกน QR Code</button></div>
+  <div id="topupArea" class="section"></div>
+</section>
+
+<section id="payment" class="page">
+  <div class="pagehead"><div><h1>ชำระเงิน</h1><p>ซื้อสินค้าในสหกรณ์และหักยอดจากบัญชีสมาชิก</p></div></div>
+  <div class="card scanbox"><div class="big">📷</div><h3>สแกน QR Code สมาชิก</h3><p>ระบบจะตรวจสอบยอดเงินล่าสุดก่อนชำระทุกครั้ง</p><button class="btn primary" onclick="startScanner('payment')">เปิดกล้องสแกน QR Code</button></div>
+  <div id="paymentArea" class="section"></div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="addModal"><div class="modalbox">
+  <div class="modalhead"><h2>เพิ่มสมาชิก</h2><button class="close" onclick="closeModal('addModal')">×</button></div>
+  <div class="formgrid">
+    <div class="field"><label>รหัสนักเรียน *</label><input class="input" id="fStudentID"></div>
+    <div class="field"><label>ระดับชั้น *</label><input class="input" id="fClass" placeholder="เช่น ป.3/1"></div>
+    <div class="field full"><label>ชื่อ-นามสกุล *</label><input class="input" id="fFullName"></div>
+  </div>
+  <div class="actions" style="margin-top:17px"><button class="btn secondary" onclick="closeModal('addModal')">ยกเลิก</button><button class="btn primary" id="saveMemberBtn" onclick="saveMember()">บันทึกสมาชิก</button></div>
+</div></div>
+
+<div class="modal scanner-modal" id="scannerModal"><div class="modalbox">
+  <div class="modalhead"><h2>สแกน QR Code</h2><button class="close" onclick="stopScanner()">×</button></div>
+  <div id="reader"></div><p class="hint">กรุณาอนุญาตให้เว็บไซต์ใช้กล้อง หากระบบถามสิทธิ์</p>
+</div></div>
+
+<div class="modal" id="qrModal"><div class="modalbox">
+  <div class="modalhead"><h2>QR Code สมาชิก</h2><button class="close" onclick="closeModal('qrModal')">×</button></div>
+  <div id="qrViewer" class="qrviewer"></div>
+  <div class="actions" style="justify-content:center;margin-top:17px"><button class="btn primary" onclick="downloadQR()">⬇ ดาวน์โหลด QR</button><button class="btn secondary" onclick="printQR()">🖨 พิมพ์ QR</button></div>
+</div></div>
+
+<div class="modal" id="historyModal"><div class="modalbox">
+  <div class="modalhead"><h2>ประวัติสมาชิก</h2><button class="close" onclick="closeModal('historyModal')">×</button></div>
+  <div id="historyContent"></div>
+</div></div>
+
+<div class="modal" id="receiptModal"><div class="modalbox printable">
+  <div class="modalhead no-print"><h2>ใบเสร็จ</h2><button class="close" onclick="closeModal('receiptModal')">×</button></div>
+  <div id="receiptContent"></div>
+  <div class="actions no-print" style="justify-content:center;margin-top:17px"><button class="btn primary" onclick="window.print()">🖨 พิมพ์ใบเสร็จ</button><button class="btn secondary" onclick="closeModal('receiptModal')">ปิด</button></div>
+</div></div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+let members=[], selectedMember=null, scanTarget='', scanner=null, qrValue='', qrInstance=null, busy=false;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const dt=s=>s?new Date(s).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'-';
+function setToday(){ $('todayText').textContent=new Date().toLocaleDateString('th-TH',{dateStyle:'full'}); }
+function loading(title='กำลังดำเนินการ...'){Swal.fire({title,text:'กรุณารอสักครู่',allowOutsideClick:false,didOpen:()=>Swal.showLoading()});}
+function err(e){busy=false;Swal.fire({icon:'error',title:'เกิดข้อผิดพลาด',text:e?.message||String(e)});}
+function ok(title,text=''){Swal.fire({icon:'success',title,text,timer:1800,showConfirmButton:false});}
+function call(fn,args=[],success=()=>{}){google.script.run.withSuccessHandler(success).withFailureHandler(err)[fn](...args);}
+
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+$('hamb').onclick=()=> $('mobileMenu').classList.toggle('open');
+
+function go(page){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  $(page).classList.add('active');
+  document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+  $('mobileMenu').classList.remove('open');
+  if(page==='dashboard')loadDashboard();
+  if(page==='members')loadMembers();
+}
+function loadDashboard(){
+  call('getDashboardData',[],d=>{
+    $('memberCount').textContent=Number(d.memberCount).toLocaleString('th-TH')+' คน';
+    $('totalBalance').textContent=money(d.totalBalance);
+    $('todayPaymentCount').textContent=Number(d.todayPaymentCount).toLocaleString('th-TH')+' รายการ';
+    $('recentPayments').innerHTML=d.recentPayments.length?d.recentPayments.map(p=>`<tr><td>${esc(dt(p.DateTime))}</td><td>${esc(p.StudentID)}</td><td>${esc(p.FullName)}</td><td>${esc(p.Product)}</td><td class="money">${money(p.Amount)}</td></tr>`).join(''):`<tr><td colspan="5" class="empty">ยังไม่มีรายการ</td></tr>`;
+    $('recentTopups').innerHTML=d.recentTopups.length?d.recentTopups.map(p=>`<tr><td>${esc(dt(p.DateTime))}</td><td>${esc(p.StudentID)}</td><td>${esc(p.FullName)}</td><td class="money">+${money(p.Amount)}</td><td>${money(p.BalanceAfter)}</td></tr>`).join(''):`<tr><td colspan="5" class="empty">ยังไม่มีรายการ</td></tr>`;
+  });
+}
+function loadMembers(){call('getMembers',[],d=>{members=d;renderMembers()})}
+function renderMembers(){
+  const q=($('memberSearch').value||'').trim().toLowerCase();
+  const rows=members.filter(m=>[m.MemberID,m.StudentID,m.FullName,m.Class].some(v=>String(v).toLowerCase().includes(q)));
+  $('membersTable').innerHTML=rows.length?rows.map(m=>`<tr>
+  <td>${esc(m.MemberID)}</td><td>${esc(m.StudentID)}</td><td><b>${esc(m.FullName)}</b></td><td>${esc(m.Class)}</td>
+  <td class="money">${money(m.Balance)}</td><td><span class="badge">${esc(m.Status)}</span></td>
+  <td><div class="actions"><button class="btn secondary" onclick="selectMember('${esc(m.MemberID)}')">ดู</button><button class="btn secondary" onclick="showQR('${esc(m.MemberID)}')">QR</button></div></td></tr>`).join(''):`<tr><td colspan="7" class="empty">ไม่พบสมาชิก</td></tr>`;
+}
+function selectMember(id){
+  const m=members.find(x=>x.MemberID===id); if(!m)return; selectedMember=m; showMemberCard(m);
+}
+function showMemberCard(m){
+  $('selectedMemberWrap').innerHTML=`<div class="card member-card">
+  <div class="member-main"><h2>${esc(m.FullName)}</h2><div class="member-meta">รหัสนักเรียน: <b>${esc(m.StudentID)}</b> · สมาชิก: <b>${esc(m.MemberID)}</b><br>ระดับชั้น: <b>${esc(m.Class)}</b></div>
+  <div class="actions" style="margin-top:13px"><button class="btn primary" onclick="prefillTopup()">💰 เติมเงิน</button><button class="btn secondary" onclick="prefillPayment()">🛒 ชำระเงิน</button><button class="btn secondary" onclick="showHistory('${esc(m.MemberID)}')">📋 ดูประวัติ</button><button class="btn secondary" onclick="showQR('${esc(m.MemberID)}')">▣ QR Code</button></div></div>
+  <div class="balancebox"><small>ยอดเงินคงเหลือ</small><strong>${money(m.Balance)}</strong></div></div>`;
+}
+function prefillTopup(){go('topup');selectedMember&&renderTopup(selectedMember)}
+function prefillPayment(){go('payment');selectedMember&&renderPayment(selectedMember)}
+function openAddMember(){$('addModal').classList.add('open');$('fStudentID').focus()}
+function closeModal(id){$(id).classList.remove('open')}
+function saveMember(){
+  if(busy)return; busy=true; const data={studentID:$('fStudentID').value,fullName:$('fFullName').value,className:$('fClass').value};
+  loading('กำลังเพิ่มสมาชิก');
+  call('addMember',[data],m=>{busy=false;Swal.close();closeModal('addModal');selectedMember=m;showQR(m.MemberID);loadMembers();ok('เพิ่มสมาชิกสำเร็จ',`${m.FullName} · ${m.MemberID}`)})
+}
+function startScanner(target){
+  scanTarget=target;$('scannerModal').classList.add('open');
+  setTimeout(()=>{
+    try{
+      scanner=new Html5Qrcode('reader');
+      scanner.start({facingMode:'environment'},{fps:10,qrbox:{width:250,height:250}},text=>handleScan(text),()=>{}).catch(e=>{Swal.fire({icon:'error',title:'ไม่สามารถเปิดกล้องได้',text:'กรุณาอนุญาตการใช้กล้อง และตรวจสอบว่าเว็บไซต์เปิดผ่าน HTTPS หรือ Google Apps Script Web App'})});
+    }catch(e){err(e)}
+  },150);
+}
+function handleScan(text){
+  if(!scanner)return; stopScanner();
+  loading('กำลังค้นหาสมาชิก');
+  call('getMemberByQRCode',[text],m=>{Swal.close();selectedMember=m;
+    if(scanTarget==='members'){showMemberCard(m);document.querySelector('#selectedMemberWrap').scrollIntoView({behavior:'smooth'})}
+    if(scanTarget==='topup')renderTopup(m);
+    if(scanTarget==='payment')renderPayment(m);
+  });
+}
+function stopScanner(){
+  if(scanner){scanner.stop().catch(()=>{});scanner.clear().catch(()=>{});scanner=null}
+  closeModal('scannerModal');
+}
+function renderTopup(m){
+  selectedMember=m;
+  $('topupArea').innerHTML=`<div class="card"><div class="member-card"><div><h2>${esc(m.FullName)}</h2><div class="member-meta">รหัสนักเรียน: ${esc(m.StudentID)} · ${esc(m.Class)}</div></div><div class="balancebox"><small>ยอดคงเหลือปัจจุบัน</small><strong>${money(m.Balance)}</strong></div></div>
+  <hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="field"><label>จำนวนเงินที่ต้องการเติม *</label><input class="input" id="topupAmount" type="number" min="1" step="0.01" placeholder="เช่น 50"></div>
+  <div class="actions" style="margin-top:12px">${[10,20,50,100,200,500].map(x=>`<button class="btn secondary" onclick="setTopup(${x})">${x}</button>`).join('')}</div>
+  <button class="btn primary" id="topupBtn" style="width:100%;margin-top:16px" onclick="doTopup()">💰 ยืนยันการเติมเงิน</button></div>`;
+}
+function setTopup(n){$('topupAmount').value=n}
+function doTopup(){
+  if(busy)return; const amount=Number($('topupAmount').value);
+  if(!selectedMember||amount<=0)return Swal.fire({icon:'warning',title:'ตรวจสอบข้อมูล',text:'กรุณาระบุจำนวนเงินมากกว่า 0'});
+  busy=true;$('topupBtn').disabled=true;loading('กำลังบันทึกการเติมเงิน');
+  call('topUpMember',[selectedMember.MemberID,amount,'เจ้าหน้าที่'],r=>{busy=false;Swal.close();selectedMember=r.member;renderTopup(r.member);showTopupReceipt(r);ok('เติมเงินสำเร็จ',`ยอดใหม่ ${money(r.after)}`)})
+}
+function showTopupReceipt(r){
+  $('receiptContent').innerHTML=`<div class="receipt"><h2>สรุปการเติมเงิน</h2><div class="center">สหกรณ์นักเรียน</div><hr><table>
+  <tr><td>เลขที่รายการ</td><td class="right">${esc(r.transactionId)}</td></tr><tr><td>วันที่/เวลา</td><td class="right">${esc(dt(r.dateTime))}</td></tr>
+  <tr><td>รหัสนักเรียน</td><td class="right">${esc(r.member.StudentID)}</td></tr><tr><td>ชื่อ</td><td class="right">${esc(r.member.FullName)}</td></tr>
+  <tr><td>ยอดก่อนเติม</td><td class="right">${money(r.before)}</td></tr><tr><td><b>เติมเงิน</b></td><td class="right"><b>+${money(r.amount)}</b></td></tr>
+  <tr><td><b>ยอดคงเหลือ</b></td><td class="right"><b>${money(r.after)}</b></td></tr></table></div>`;
+  $('receiptModal').classList.add('open');
+}
+function renderPayment(m){
+  selectedMember=m;
+  $('paymentArea').innerHTML=`<div class="card"><div class="member-card"><div><h2>${esc(m.FullName)}</h2><div class="member-meta">รหัสนักเรียน: ${esc(m.StudentID)} · ${esc(m.Class)}</div></div><div class="balancebox"><small>ยอดเงินคงเหลือ</small><strong>${money(m.Balance)}</strong></div></div>
+  <hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h3>รายการสินค้า</h3><div id="items" class="payment-items"></div>
+  <button class="btn secondary" onclick="addItem()">＋ เพิ่มรายการสินค้า</button>
+  <div class="totalbar"><span>ยอดรวมทั้งหมด</span><strong id="payTotal">฿0.00</strong></div><div id="insufficient" class="insufficient"></div>
+  <button class="btn primary" id="payBtn" style="width:100%;margin-top:16px" onclick="doPayment()">✅ ยืนยันการชำระเงิน</button></div>`;
+  addItem();
+}
+function addItem(name='',price='',qty=1){
+  const wrap=$('items'); if(!wrap)return;
+  const row=document.createElement('div');row.className='itemrow';
+  row.innerHTML=`<input class="input itemname" placeholder="ชื่อสินค้า" value="${esc(name)}"><input class="input itemprice" type="number" min="0" step="0.01" placeholder="ราคา" value="${price}"><input class="input itemqty" type="number" min="1" step="1" value="${qty}" title="จำนวน"><button class="btn danger" onclick="this.parentElement.remove();calcPayment()">×</button>`;
+  wrap.appendChild(row);row.querySelectorAll('input').forEach(x=>x.addEventListener('input',calcPayment));calcPayment();
+}
+function calcPayment(){
+  let total=0;document.querySelectorAll('#items .itemrow').forEach(r=>{const p=Number(r.querySelector('.itemprice').value)||0,q=Number(r.querySelector('.itemqty').value)||0;total+=p*q});
+  $('payTotal').textContent=money(total);
+  const box=$('insufficient'),btn=$('payBtn');
+  if(selectedMember&&total>selectedMember.Balance){box.style.display='block';box.innerHTML=`<b>ยอดเงินไม่เพียงพอ</b><br>คงเหลือ ${money(selectedMember.Balance)} · ต้องชำระ ${money(total)} · ขาด ${money(total-selectedMember.Balance)}`;btn.disabled=true}
+  else{box.style.display='none';btn.disabled=total<=0}
+  return total;
+}
+function doPayment(){
+  if(busy)return;const rows=[...document.querySelectorAll('#items .itemrow')];const items=[];let total=0;
+  rows.forEach(r=>{const name=r.querySelector('.itemname').value.trim(),price=Number(r.querySelector('.itemprice').value)||0,qty=Number(r.querySelector('.itemqty').value)||0;if(name&&price>0&&qty>0){items.push({name,price,qty});total+=price*qty}});
+  if(!items.length)return Swal.fire({icon:'warning',title:'ยังไม่มีรายการสินค้า',text:'กรุณากรอกชื่อสินค้า ราคา และจำนวน'});
+  if(total>selectedMember.Balance)return Swal.fire({icon:'error',title:'ยอดเงินไม่เพียงพอ'});
+  const product=items.map(x=>`${x.name} x${x.qty} (${money(x.price)})`).join(', ');
+  busy=true;$('payBtn').disabled=true;loading('กำลังบันทึกการชำระเงิน');
+  call('createPayment',[{memberId:selectedMember.MemberID,amount:total,product,operator:'เจ้าหน้าที่'}],r=>{busy=false;Swal.close();selectedMember=r.member;renderPayment(r.member);showPaymentReceipt(r,items);loadDashboard()})
+}
+function showPaymentReceipt(r,items){
+  $('receiptContent').innerHTML=`<div class="receipt"><h2>ใบเสร็จรับเงินสหกรณ์นักเรียน</h2><div class="center">ขอบคุณที่ใช้บริการ</div><hr><table>
+  <tr><td>เลขที่รายการ</td><td class="right">${esc(r.paymentId)}</td></tr><tr><td>วันที่/เวลา</td><td class="right">${esc(dt(r.dateTime))}</td></tr>
+  <tr><td>รหัสนักเรียน</td><td class="right">${esc(r.member.StudentID)}</td></tr><tr><td>ชื่อ</td><td class="right">${esc(r.member.FullName)}</td></tr><tr><td>ชั้น</td><td class="right">${esc(r.member.Class)}</td></tr></table><hr>
+  <table>${items.map(x=>`<tr><td>${esc(x.name)} × ${x.qty}</td><td class="right">${money(x.price*x.qty)}</td></tr>`).join('')}<tr><td><b>ยอดชำระ</b></td><td class="right"><b>${money(r.amount)}</b></td></tr>
+  <tr><td>ยอดก่อนชำระ</td><td class="right">${money(r.before)}</td></tr><tr><td><b>ยอดคงเหลือ</b></td><td class="right"><b>${money(r.after)}</b></td></tr></table></div>`;
+  $('receiptModal').classList.add('open');
+}
+function showQR(id){
+  const m=members.find(x=>x.MemberID===id)||selectedMember;
+  if(!m)return;qrValue=m.QRCode||`MEMBER:${m.MemberID}`;
+  $('qrViewer').innerHTML=`<h3>${esc(m.FullName)}</h3><p>${esc(m.StudentID)} · ${esc(m.Class)}</p><div id="qrcode"></div><p class="hint">${esc(qrValue)}</p>`;
+  qrInstance=new QRCode(document.getElementById('qrcode'),{text:qrValue,width:240,height:240,colorDark:'#222',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+  $('qrModal').classList.add('open');
+}
+function downloadQR(){
+  const canvas=$('qrcode')?.querySelector('canvas');const img=$('qrcode')?.querySelector('img');let url='';
+  if(canvas)url=canvas.toDataURL('image/png');else if(img)url=img.src;else return;
+  const a=document.createElement('a');a.href=url;a.download=`QR-${qrValue.replace(':','-')}.png`;a.click();
+}
+function printQR(){
+  const content=$('qrViewer').innerHTML;const w=window.open('','_blank','width=500,height=600');
+  w.document.write(`<html><head><title>QR Code สมาชิก</title><style>body{font-family:Arial,sans-serif;text-align:center;padding:30px}img{max-width:280px}canvas{max-width:280px}</style></head><body>${content}</body></html>`);w.document.close();setTimeout(()=>w.print(),400)
+}
+function showHistory(id){
+  loading('กำลังโหลดประวัติ');
+  call('getAllTransactions',[id],r=>{Swal.close();
+    const p=r.payments||[],t=r.topups||[];
+    $('historyContent').innerHTML=`<h3>${esc(selectedMember?.FullName||id)}</h3><h4>การชำระเงิน</h4><div class="tablewrap"><table class="table"><thead><tr><th>วันเวลา</th><th>รายการ</th><th>ยอด</th><th>คงเหลือ</th></tr></thead><tbody>${p.length?p.map(x=>`<tr><td>${esc(dt(x.DateTime))}</td><td>${esc(x.Product)}</td><td class="money">-${money(x.Amount)}</td><td>${money(x.BalanceAfter)}</td></tr>`).join(''):`<tr><td colspan="4" class="empty">ไม่มีข้อมูล</td></tr>`}</tbody></table></div><h4 style="margin-top:20px">การเติมเงิน</h4><div class="tablewrap"><table class="table"><thead><tr><th>วันเวลา</th><th>เลขที่รายการ</th><th>ยอดเติม</th><th>คงเหลือ</th></tr></thead><tbody>${t.length?t.map(x=>`<tr><td>${esc(dt(x.DateTime))}</td><td>${esc(x.TransactionID)}</td><td class="money">+${money(x.Amount)}</td><td>${money(x.BalanceAfter)}</td></tr>`).join(''):`<tr><td colspan="4" class="empty">ไม่มีข้อมูล</td></tr>`}</tbody></table></div>`;
+    $('historyModal').classList.add('open');
+  })
+}
+setToday();loadDashboard();
+</script>
 </body>
 </html>

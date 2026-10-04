@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6d28d9">
+  <title>ระบบสแกนสหกรณ์</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <?!= include('CSS'); ?>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-school"></i></div>
+        <div>
+          <div class="brand-title">ระบบสแกนสหกรณ์</div>
+          <div class="brand-subtitle">ระบบกระเป๋าเงินนักเรียน | School Cooperative Wallet</div>
+        </div>
+      </div>
+      <div class="user-status">
+        <div><i class="fa-solid fa-user-shield"></i> เจ้าหน้าที่สหกรณ์</div>
+        <span class="online"><span class="dot"></span> ออนไลน์</span>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-house"></i><span>หน้าแรก</span></button>
+      <button class="nav-item" data-page="members"><i class="fa-solid fa-users"></i><span>สมาชิก</span></button>
+      <button class="nav-item" data-page="topup"><i class="fa-solid fa-wallet"></i><span>เติมเงิน</span></button>
+      <button class="nav-item" data-page="payment"><i class="fa-solid fa-cart-shopping"></i><span>ชำระเงิน</span></button>
+    </nav>
+
+    <main class="container">
+      <section id="page-dashboard" class="page active">
+        <div class="page-head"><div><h1>ภาพรวมระบบ</h1><p>ติดตามสมาชิก ยอดเงิน และธุรกรรมของสหกรณ์</p></div><button class="btn secondary" onclick="refreshDashboard()"><i class="fa-solid fa-rotate"></i> รีเฟรช</button></div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-users"></i></div><div><div class="stat-label">จำนวนสมาชิก</div><div id="stat-members" class="stat-value">-</div></div></div>
+          <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-baht-sign"></i></div><div><div class="stat-label">ยอดเงินคงเหลือรวม</div><div id="stat-balance" class="stat-value">-</div></div></div>
+          <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-cart-shopping"></i></div><div><div class="stat-label">รายการชำระเงินวันนี้</div><div id="stat-payments" class="stat-value">-</div></div></div>
+          <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-chart-column"></i></div><div><div class="stat-label">ยอดขายวันนี้</div><div id="stat-sales" class="stat-value">-</div></div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>ธุรกรรมล่าสุด</h2></div><div class="table-wrap"><table><thead><tr><th>เวลา</th><th>รหัสสมาชิก</th><th>ชื่อสมาชิก</th><th>ประเภท</th><th>จำนวนเงิน</th><th>ยอดคงเหลือ</th></tr></thead><tbody id="recent-body"><tr><td colspan="6" class="empty">กำลังโหลด...</td></tr></tbody></table></div></div>
+      </section>
+
+      <section id="page-members" class="page">
+        <div class="page-head"><div><h1>สมาชิก</h1><p>สแกน QR Code หรือค้นหาสมาชิกด้วยรหัส/ชื่อ</p></div><button class="btn primary" onclick="openMemberModal()"><i class="fa-solid fa-plus"></i> เพิ่มสมาชิก</button></div>
+        <div class="two-col">
+          <div class="panel scanner-panel">
+            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> สแกน QR Code สมาชิก</h2></div>
+            <div id="scanner-members" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
+            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('members')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'members')"></label></div>
+            <div class="search-row"><input id="member-search" class="input" placeholder="พิมพ์รหัสสมาชิกหรือชื่อสมาชิก" onkeydown="if(event.key==='Enter') searchMembers()"><button class="btn secondary" onclick="searchMembers()"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
+          </div>
+          <div class="panel"><div class="panel-head"><h2>ผลการค้นหา</h2></div><div id="member-results" class="member-results"><div class="empty">ยังไม่มีข้อมูล กรุณาสแกนหรือค้นหา</div></div></div>
+        </div>
+        <div id="member-detail-panel" class="panel hidden"></div>
+      </section>
+
+      <section id="page-topup" class="page">
+        <div class="page-head"><div><h1>เติมเงินเข้ากระเป๋านักเรียน</h1><p>สแกน QR Code หรือค้นหาสมาชิก แล้วระบุจำนวนเงิน</p></div></div>
+        <div class="two-col">
+          <div class="panel scanner-panel">
+            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> ระบุสมาชิก</h2></div>
+            <div id="scanner-topup" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
+            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('topup')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'topup')"></label></div>
+            <div class="search-row"><input id="topup-search" class="input" placeholder="รหัสสมาชิก / ชื่อ" onkeydown="if(event.key==='Enter') selectBySearch('topup')"><button class="btn secondary" onclick="selectBySearch('topup')"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
+          </div>
+          <div class="panel transaction-card"><div class="panel-head"><h2>รายการเติมเงิน</h2></div><div id="topup-workspace"><div class="empty">กรุณาระบุสมาชิกก่อน</div></div></div>
+        </div>
+      </section>
+
+      <section id="page-payment" class="page">
+        <div class="page-head"><div><h1>ชำระเงิน</h1><p>สแกน QR Code แล้วหักเงินจากกระเป๋านักเรียน</p></div></div>
+        <div class="two-col">
+          <div class="panel scanner-panel">
+            <div class="panel-head"><h2><i class="fa-solid fa-qrcode"></i> ระบุสมาชิก</h2></div>
+            <div id="scanner-payment" class="scanner-box"><div class="scanner-placeholder"><i class="fa-solid fa-camera"></i><p>กด “เปิดกล้อง” เพื่อเริ่มสแกน</p></div></div>
+            <div class="scanner-actions"><button class="btn primary" onclick="startScanner('payment')"><i class="fa-solid fa-camera"></i> เปิดกล้อง</button><label class="btn secondary file-btn"><i class="fa-solid fa-folder-open"></i> อัปโหลดรูป QR<input type="file" accept="image/jpeg,image/png,image/webp" onchange="scanImage(event,'payment')"></label></div>
+            <div class="search-row"><input id="payment-search" class="input" placeholder="รหัสสมาชิก / ชื่อ" onkeydown="if(event.key==='Enter') selectBySearch('payment')"><button class="btn secondary" onclick="selectBySearch('payment')"><i class="fa-solid fa-magnifying-glass"></i> ค้นหา</button></div>
+          </div>
+          <div class="panel transaction-card"><div class="panel-head"><h2>รายการชำระเงิน</h2></div><div id="payment-workspace"><div class="empty">กรุณาระบุสมาชิกก่อน</div></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-root"></div>
+  <?!= include('JavaScript'); ?>
+</body>
+</html>

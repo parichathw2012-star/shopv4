@@ -1,265 +1,312 @@
-/**
- * ระบบสแกนสหกรณ์ (School Cooperative Wallet)
- * Google Apps Script Backend + Google Sheets
- *
- * วิธีใช้:
- * 1) สร้าง Google Sheet 1 ไฟล์
- * 2) Extensions > Apps Script
- * 3) วางไฟล์ Code.gs และสร้างไฟล์ HTML ตามที่ให้มา
- * 4) ตั้งค่า SPREADSHEET_ID ด้านล่าง
- * 5) รัน setupSheets() 1 ครั้งเพื่อสร้างหัวตาราง + ข้อมูลตัวอย่าง
- * 6) Deploy > New deployment > Web app
- *    Execute as: Me
- *    Who has access: ตามนโยบายโรงเรียน
- */
-
-const SPREADSHEET_ID = '1oin8NgWR0IuPezfCFEbEZVLARNza_frgElQF-sTv65I'; // ใส่ Spreadsheet ID หาก Script ไม่ได้ผูกกับ Google Sheet
-const APP_NAME = 'ระบบสแกนสหกรณ์';
-
-const SHEET_MEMBERS = 'Members';
-const SHEET_TRANSACTIONS = 'Transactions';
+const CONFIG = {
+  SPREADSHEET_ID: '1q0P3EKmqV3CLTsb4QsYajYjWPdBYeB1KpzqFQEy6JpU',
+  SHEETS: {
+    MEMBERS: 'Members',
+    TOPUP: 'TopUp',
+    PAYMENTS: 'Payments'
+  },
+  TIMEZONE: Session.getScriptTimeZone() || 'Asia/Bangkok'
+};
 
 function doGet() {
-  return HtmlService.createTemplateFromFile('Index')
-    .evaluate()
-    .setTitle(APP_NAME)
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('ระบบสหกรณ์นักเรียน v5')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+function getSS_() {
+  if (!CONFIG.SPREADSHEET_ID || CONFIG.SPREADSHEET_ID === 'P1q0P3EKmqV3CLTsb4QsYajYjWPdBYeB1KpzqFQEy6JpU') {
+    throw new Error('กรุณาตั้งค่า SPREADSHEET_ID ใน Code.gs ก่อนใช้งาน');
+  }
+  return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 }
 
-function getSS_() {
-  if (SPREADSHEET_ID) return SpreadsheetApp.openById(SPREADSHEET_ID);
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) throw new Error('ไม่พบ Google Spreadsheet กรุณาตั้งค่า SPREADSHEET_ID ใน Code.gs');
-  return ss;
+function getSheet_(name) {
+  const sh = getSS_().getSheetByName(name);
+  if (!sh) throw new Error(`ไม่พบ Sheet: ${name}`);
+  return sh;
 }
 
 function setupSheets() {
   const ss = getSS_();
-
-  let members = ss.getSheetByName(SHEET_MEMBERS);
-  if (!members) members = ss.insertSheet(SHEET_MEMBERS);
-  members.clear();
-  members.getRange(1,1,1,10).setValues([[
-    'MemberID','FirstName','LastName','FullName','Class','Room','Balance','Status','QRCode','CreatedAt'
-  ]]);
-
-  const samples = [
-    ['65001','นภา','แสงทอง','นภา แสงทอง','ป.6','1',350,'ใช้งาน','COOP:65001',new Date()],
-    ['65002','กิตติพงษ์','ใจดี','กิตติพงษ์ ใจดี','ป.6','1',250,'ใช้งาน','COOP:65002',new Date()],
-    ['65003','มาลี','ดวงแก้ว','มาลี ดวงแก้ว','ป.5','2',500,'ใช้งาน','COOP:65003',new Date()],
-    ['65004','ธนกร','รุ่งเรือง','ธนกร รุ่งเรือง','ป.5','1',180,'ใช้งาน','COOP:65004',new Date()],
-    ['65005','พิมพ์ชนก','สุขใจ','พิมพ์ชนก สุขใจ','ป.4','2',420,'ใช้งาน','COOP:65005',new Date()]
-  ];
-  members.getRange(2,1,samples.length,10).setValues(samples);
-  members.setFrozenRows(1);
-  members.autoResizeColumns(1,10);
-
-  let tx = ss.getSheetByName(SHEET_TRANSACTIONS);
-  if (!tx) tx = ss.insertSheet(SHEET_TRANSACTIONS);
-  tx.clear();
-  tx.getRange(1,1,1,10).setValues([[
-    'TransactionID','DateTime','MemberID','MemberName','Type','Amount','BeforeBalance','AfterBalance','Staff','Note'
-  ]]);
-  tx.setFrozenRows(1);
-  tx.autoResizeColumns(1,10);
-
-  return {ok:true, message:'สร้างโครงสร้างชีตและข้อมูลตัวอย่างเรียบร้อย'};
+  const specs = {
+    Members: ['MemberID','StudentID','FullName','Class','Balance','QRCode','Status','CreatedAt','UpdatedAt'],
+    TopUp: ['TransactionID','DateTime','MemberID','StudentID','FullName','Amount','BalanceBefore','BalanceAfter','Operator'],
+    Payments: ['PaymentID','DateTime','MemberID','StudentID','FullName','Amount','BalanceBefore','BalanceAfter','Product','Operator']
+  };
+  Object.keys(specs).forEach(name => {
+    let sh = ss.getSheetByName(name);
+    if (!sh) sh = ss.insertSheet(name);
+    if (sh.getLastRow() === 0) sh.appendRow(specs[name]);
+    else {
+      const headers = sh.getRange(1,1,1,specs[name].length).getValues()[0];
+      const mismatch = specs[name].some((v,i) => headers[i] !== v);
+      if (mismatch) sh.getRange(1,1,1,specs[name].length).setValues([specs[name]]);
+    }
+    sh.setFrozenRows(1);
+  });
+  return {ok:true, message:'สร้าง/ตรวจสอบโครงสร้าง Sheets เรียบร้อย'};
 }
 
-function getSheet_(name) {
-  const sheet = getSS_().getSheetByName(name);
-  if (!sheet) throw new Error(`ไม่พบชีต ${name} กรุณารัน setupSheets()`);
-  return sheet;
+function now_() {
+  return Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
+}
+
+function dateKey_(d) {
+  return Utilities.formatDate(new Date(d), CONFIG.TIMEZONE, 'yyyy-MM-dd');
 }
 
 function normalize_(v) {
   return String(v == null ? '' : v).trim();
 }
 
-function rowToMember_(row) {
-  return {
-    memberId: normalize_(row[0]),
-    firstName: normalize_(row[1]),
-    lastName: normalize_(row[2]),
-    fullName: normalize_(row[3]),
-    className: normalize_(row[4]),
-    room: normalize_(row[5]),
-    classRoom: `${normalize_(row[4])}/${normalize_(row[5])}`.replace(/\/$/, ''),
-    balance: Number(row[6]) || 0,
-    status: normalize_(row[7]) || 'ใช้งาน',
-    qrCode: normalize_(row[8]) || `COOP:${normalize_(row[0])}`,
-    createdAt: row[9] instanceof Date ? row[9].toISOString() : normalize_(row[9])
-  };
+function money_(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
+}
+
+function rowsToObjects_(values) {
+  if (!values || values.length < 2) return [];
+  const headers = values[0];
+  return values.slice(1).map((row, idx) => {
+    const o = {_row: idx + 2};
+    headers.forEach((h,i) => o[h] = row[i]);
+    return o;
+  });
 }
 
 function getMembers() {
-  const sheet = getSheet_(SHEET_MEMBERS);
-  const last = sheet.getLastRow();
-  if (last < 2) return [];
-  return sheet.getRange(2,1,last-1,10).getValues().map(rowToMember_);
+  const sh = getSheet_(CONFIG.SHEETS.MEMBERS);
+  return rowsToObjects_(sh.getDataRange().getValues()).map(cleanMember_);
 }
 
-function getMemberById(memberId) {
-  const id = normalize_(memberId).replace(/^COOP:/i,'');
-  if (!id) return null;
-  const sheet = getSheet_(SHEET_MEMBERS);
-  const values = sheet.getDataRange().getValues();
-  for (let i=1; i<values.length; i++) {
-    if (normalize_(values[i][0]) === id) return rowToMember_(values[i]);
-  }
-  return null;
+function cleanMember_(m) {
+  return {
+    MemberID: normalize_(m.MemberID),
+    StudentID: normalize_(m.StudentID),
+    FullName: normalize_(m.FullName),
+    Class: normalize_(m.Class),
+    Balance: money_(m.Balance),
+    QRCode: normalize_(m.QRCode),
+    Status: normalize_(m.Status) || 'Active',
+    CreatedAt: m.CreatedAt ? String(m.CreatedAt) : '',
+    UpdatedAt: m.UpdatedAt ? String(m.UpdatedAt) : ''
+  };
 }
 
-function searchMember(keyword) {
-  const q = normalize_(keyword).toLowerCase();
-  if (!q) return [];
-  return getMembers().filter(m =>
-    [m.memberId,m.firstName,m.lastName,m.fullName,m.className,m.room,m.classRoom]
-      .join(' ').toLowerCase().includes(q)
+function getMemberByQRCode(qrCode) {
+  const raw = normalize_(qrCode);
+  let value = raw;
+  const match = raw.match(/^(MEMBER|STUDENT)\s*:\s*(.+)$/i);
+  if (match) value = normalize_(match[2]);
+
+  const members = getMembers();
+  const found = members.find(m =>
+    m.MemberID.toLowerCase() === value.toLowerCase() ||
+    m.StudentID.toLowerCase() === value.toLowerCase() ||
+    m.QRCode.toLowerCase() === raw.toLowerCase()
   );
+  if (!found) throw new Error('ไม่พบข้อมูลสมาชิกจาก QR Code');
+  return found;
+}
+
+function getMemberByStudentID(studentID) {
+  const id = normalize_(studentID).toLowerCase();
+  const found = getMembers().find(m => m.StudentID.toLowerCase() === id);
+  return found || null;
+}
+
+function generateMemberId() {
+  const members = getMembers();
+  let max = 0;
+  members.forEach(m => {
+    const n = parseInt(String(m.MemberID).replace(/^M/i,''), 10);
+    if (Number.isFinite(n)) max = Math.max(max, n);
+  });
+  return 'M' + String(max + 1).padStart(3,'0');
+}
+
+function nextId_(sheetName, prefix, colIndex) {
+  const sh = getSheet_(sheetName);
+  const last = sh.getLastRow();
+  if (last < 2) return prefix + '000001';
+  const vals = sh.getRange(2,colIndex,last-1,1).getValues().flat();
+  let max = 0;
+  vals.forEach(v => {
+    const n = parseInt(String(v).replace(new RegExp('^' + prefix, 'i'),''),10);
+    if (Number.isFinite(n)) max = Math.max(max,n);
+  });
+  return prefix + String(max + 1).padStart(6,'0');
 }
 
 function addMember(data) {
-  if (!data) throw new Error('ไม่พบข้อมูลสมาชิก');
-  const memberId = normalize_(data.memberId);
-  const firstName = normalize_(data.firstName);
-  const lastName = normalize_(data.lastName);
-  const className = normalize_(data.className);
-  const room = normalize_(data.room);
-  const status = normalize_(data.status) || 'ใช้งาน';
-  const initialBalance = Number(data.initialBalance);
-
-  if (!memberId || !firstName || !lastName || !className || !room) {
-    throw new Error('กรุณากรอกข้อมูลสมาชิกให้ครบถ้วน');
-  }
-  if (!/^[A-Za-z0-9_-]+$/.test(memberId)) throw new Error('รหัสสมาชิกควรใช้ตัวอักษร ตัวเลข _ หรือ -');
-  if (!Number.isFinite(initialBalance) || initialBalance < 0) throw new Error('ยอดเงินเริ่มต้นไม่ถูกต้อง');
-  if (getMemberById(memberId)) throw new Error('รหัสสมาชิกนี้มีอยู่แล้ว');
-
-  const sheet = getSheet_(SHEET_MEMBERS);
-  const fullName = `${firstName} ${lastName}`;
-  sheet.appendRow([memberId,firstName,lastName,fullName,className,room,initialBalance,status,`COOP:${memberId}`,new Date()]);
-  return getMemberById(memberId);
-}
-
-function updateMember_(sheet, rowIndex, balance) {
-  sheet.getRange(rowIndex,7).setValue(balance);
-}
-
-function makeTransactionId_() {
-  return 'TX' + Utilities.formatDate(new Date(), Session.getScriptTimeZone() || 'Asia/Bangkok', 'yyyyMMddHHmmss') +
-    '-' + Utilities.getUuid().slice(0,8).toUpperCase();
-}
-
-function changeBalance_(memberId, type, amount, staff, note) {
-  const id = normalize_(memberId).replace(/^COOP:/i,'');
-  const value = Number(amount);
-
-  if (!id) throw new Error('ไม่พบรหัสสมาชิก');
-  if (!Number.isFinite(value) || value <= 0) throw new Error('จำนวนเงินต้องมากกว่า 0');
-  if (!['TOPUP','PAYMENT'].includes(type)) throw new Error('ประเภทธุรกรรมไม่ถูกต้อง');
-
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
-
   try {
-    const ss = getSS_();
-    const members = getSheet_(SHEET_MEMBERS);
-    const tx = getSheet_(SHEET_TRANSACTIONS);
-    const values = members.getDataRange().getValues();
-
-    let rowIndex = -1;
-    let member = null;
-    for (let i=1; i<values.length; i++) {
-      if (normalize_(values[i][0]) === id) {
-        rowIndex = i + 1;
-        member = rowToMember_(values[i]);
-        break;
-      }
+    const studentID = normalize_(data && data.studentID);
+    const fullName = normalize_(data && data.fullName);
+    const className = normalize_(data && data.className);
+    if (!studentID || !fullName || !className) throw new Error('กรุณากรอกข้อมูลสมาชิกให้ครบ');
+    if (getMembers().some(m => m.StudentID.toLowerCase() === studentID.toLowerCase())) {
+      throw new Error('รหัสนักเรียนนี้มีอยู่แล้ว');
     }
-    if (rowIndex === -1) throw new Error('ไม่พบสมาชิก');
-    if (member.status !== 'ใช้งาน') throw new Error('สมาชิกไม่ได้อยู่ในสถานะใช้งาน');
 
-    const before = Number(members.getRange(rowIndex,7).getValue()) || 0;
-    let after = type === 'TOPUP' ? before + value : before - value;
-    if (type === 'PAYMENT' && before < value) {
-      throw new Error(`ยอดเงินไม่เพียงพอ|ยอดคงเหลือ ${before.toFixed(2)} บาท|ยอดที่ต้องชำระ ${value.toFixed(2)} บาท`);
+    const memberID = generateMemberId();
+    const created = now_();
+    const sh = getSheet_(CONFIG.SHEETS.MEMBERS);
+    sh.appendRow([memberID, studentID, fullName, className, 0, `MEMBER:${memberID}`, 'Active', created, created]);
+
+    return getMemberByQRCode(`MEMBER:${memberID}`);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function updateMemberBalance(memberId, balance) {
+  const sh = getSheet_(CONFIG.SHEETS.MEMBERS);
+  const values = sh.getDataRange().getValues();
+  const id = normalize_(memberId);
+  for (let r=1; r<values.length; r++) {
+    if (normalize_(values[r][0]) === id) {
+      sh.getRange(r+1,5).setValue(money_(balance));
+      sh.getRange(r+1,9).setValue(now_());
+      return true;
     }
-    if (after < 0) throw new Error('ไม่อนุญาตให้ยอดเงินติดลบ');
+  }
+  throw new Error('ไม่พบสมาชิก');
+}
 
-    updateMember_(members, rowIndex, after);
-    SpreadsheetApp.flush();
+function topUpMember(memberId, amount, operator) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const amt = money_(amount);
+    if (amt <= 0) throw new Error('จำนวนเงินต้องมากกว่า 0');
 
-    const txId = makeTransactionId_();
-    const now = new Date();
-    tx.appendRow([
-      txId, now, id, member.fullName, type, value, before, after,
-      normalize_(staff) || 'เจ้าหน้าที่สหกรณ์', normalize_(note)
+    const member = getMembers().find(m => m.MemberID === normalize_(memberId));
+    if (!member) throw new Error('ไม่พบสมาชิก');
+
+    const before = money_(member.Balance);
+    const after = money_(before + amt);
+    updateMemberBalance(member.MemberID, after);
+
+    const txid = nextId_(CONFIG.SHEETS.TOPUP, 'TU', 1);
+    getSheet_(CONFIG.SHEETS.TOPUP).appendRow([
+      txid, now_(), member.MemberID, member.StudentID, member.FullName,
+      amt, before, after, normalize_(operator) || 'เจ้าหน้าที่'
     ]);
-    SpreadsheetApp.flush();
 
     return {
-      ok:true,
-      transactionId:txId,
-      dateTime:now.toISOString(),
-      member:getMemberById(id),
-      type, amount:value, beforeBalance:before, afterBalance:after
+      transactionId: txid,
+      member: Object.assign({}, member, {Balance: after, UpdatedAt: now_()}),
+      amount: amt, before, after, dateTime: now_()
     };
   } finally {
     lock.releaseLock();
   }
 }
 
-function topUp(memberId, amount, staff, note) {
-  return changeBalance_(memberId,'TOPUP',amount,staff,note);
+function createPayment(data) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const memberId = normalize_(data && data.memberId);
+    const amount = money_(data && data.amount);
+    const product = normalize_(data && data.product);
+    const operator = normalize_(data && data.operator) || 'เจ้าหน้าที่';
+
+    if (!memberId) throw new Error('กรุณาเลือกสมาชิก');
+    if (amount <= 0) throw new Error('ยอดชำระต้องมากกว่า 0');
+    if (!product) throw new Error('กรุณาระบุรายการสินค้า');
+
+    const member = getMembers().find(m => m.MemberID === memberId);
+    if (!member) throw new Error('ไม่พบสมาชิก');
+
+    const before = money_(member.Balance);
+    if (before < amount) {
+      throw new Error(`ยอดเงินไม่เพียงพอ (คงเหลือ ฿${before.toFixed(2)} แต่ต้องชำระ ฿${amount.toFixed(2)})`);
+    }
+
+    const after = money_(before - amount);
+    updateMemberBalance(member.MemberID, after);
+
+    const paymentId = nextId_(CONFIG.SHEETS.PAYMENTS, 'PY', 1);
+    getSheet_(CONFIG.SHEETS.PAYMENTS).appendRow([
+      paymentId, now_(), member.MemberID, member.StudentID, member.FullName,
+      amount, before, after, product, operator
+    ]);
+
+    return {
+      paymentId,
+      dateTime: now_(),
+      member: Object.assign({}, member, {Balance: after, UpdatedAt: now_()}),
+      amount, before, after, product
+    };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
-function payment(memberId, amount, staff, note) {
-  return changeBalance_(memberId,'PAYMENT',amount,staff,note);
+function getPaymentHistory(memberId) {
+  const sh = getSheet_(CONFIG.SHEETS.PAYMENTS);
+  return rowsToObjects_(sh.getDataRange().getValues())
+    .filter(x => normalize_(x.MemberID) === normalize_(memberId))
+    .sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime))
+    .slice(0,100);
 }
 
-function getTransactions(limit) {
-  const sheet = getSheet_(SHEET_TRANSACTIONS);
-  const last = sheet.getLastRow();
-  if (last < 2) return [];
-  const n = Math.min(Number(limit) || 10, last - 1);
-  const values = sheet.getRange(Math.max(2,last-n+1),1,n,10).getValues();
-  return values.reverse().map(r => ({
-    transactionId:normalize_(r[0]),
-    dateTime:r[1] instanceof Date ? r[1].toISOString() : normalize_(r[1]),
-    memberId:normalize_(r[2]),
-    memberName:normalize_(r[3]),
-    type:normalize_(r[4]),
-    amount:Number(r[5]) || 0,
-    beforeBalance:Number(r[6]) || 0,
-    afterBalance:Number(r[7]) || 0,
-    staff:normalize_(r[8]),
-    note:normalize_(r[9])
-  }));
+function getTopUpHistory(memberId) {
+  const sh = getSheet_(CONFIG.SHEETS.TOPUP);
+  return rowsToObjects_(sh.getDataRange().getValues())
+    .filter(x => normalize_(x.MemberID) === normalize_(memberId))
+    .sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime))
+    .slice(0,100);
 }
 
-function getDashboard() {
+function getDashboardData() {
   const members = getMembers();
-  const tx = getTransactions(1000);
-  const tz = Session.getScriptTimeZone() || 'Asia/Bangkok';
-  const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+  const payments = rowsToObjects_(getSheet_(CONFIG.SHEETS.PAYMENTS).getDataRange().getValues());
+  const topups = rowsToObjects_(getSheet_(CONFIG.SHEETS.TOPUP).getDataRange().getValues());
+  const today = dateKey_(new Date());
 
-  const todayTx = tx.filter(t => {
-    try { return Utilities.formatDate(new Date(t.dateTime), tz, 'yyyy-MM-dd') === today; }
-    catch(e) { return false; }
-  });
-  const payments = todayTx.filter(t => t.type === 'PAYMENT');
-  const sales = payments.reduce((s,t) => s + t.amount, 0);
+  const todayPayments = payments.filter(p => p.DateTime && dateKey_(p.DateTime) === today);
+  const recentPayments = payments
+    .sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime))
+    .slice(0,10)
+    .map(p => ({
+      PaymentID: normalize_(p.PaymentID),
+      DateTime: p.DateTime ? String(p.DateTime) : '',
+      StudentID: normalize_(p.StudentID),
+      FullName: normalize_(p.FullName),
+      Product: normalize_(p.Product),
+      Amount: money_(p.Amount)
+    }));
+
+  const recentTopups = topups
+    .sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime))
+    .slice(0,10)
+    .map(t => ({
+      TransactionID: normalize_(t.TransactionID),
+      DateTime: t.DateTime ? String(t.DateTime) : '',
+      StudentID: normalize_(t.StudentID),
+      FullName: normalize_(t.FullName),
+      Amount: money_(t.Amount),
+      BalanceAfter: money_(t.BalanceAfter)
+    }));
 
   return {
     memberCount: members.length,
-    totalBalance: members.reduce((s,m) => s + m.balance, 0),
-    paymentCountToday: payments.length,
-    salesToday: sales,
-    recentTransactions: tx.slice(0,10)
+    totalBalance: members.reduce((s,m) => s + money_(m.Balance), 0),
+    todayPaymentCount: todayPayments.length,
+    recentPayments,
+    recentTopups,
+    today: today
+  };
+}
+
+function getAllTransactions(memberId) {
+  return {
+    payments: getPaymentHistory(memberId),
+    topups: getTopUpHistory(memberId)
   };
 }

@@ -15,7 +15,7 @@ function doGet() {
 }
 
 function getSS_() {
-  if (!CONFIG.SPREADSHEET_ID || CONFIG.SPREADSHEET_ID === 'P1q0P3EKmqV3CLTsb4QsYajYjWPdBYeB1KpzqFQEy6JpU') {
+  if (!CONFIG.SPREADSHEET_ID || CONFIG.SPREADSHEET_ID === '1q0P3EKmqV3CLTsb4QsYajYjWPdBYeB1KpzqFQEy6JpU') {
     throw new Error('กรุณาตั้งค่า SPREADSHEET_ID ใน Code.gs ก่อนใช้งาน');
   }
   return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);

@@ -109,9 +109,9 @@ main{max-width:1280px;margin:auto;padding:28px 24px 50px}.page{display:none}.pag
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-GAS Endpoind แก้จุดนี้
+Google Apps Script Web App URL — แก้เฉพาะ URL นี้
 <script> 
-window.GAS_URL = 'https://script.google.com/macros/s/AKfycbwhrVuABluQzx3iS1YFlj5a0Xp6UhEPsnBC_xDSddmss5pWCk4IYq0wHh-138n5fdTh/exec'; </script>
+window.GAS_URL = 'https://script.google.com/macros/s/AKfycbwgBdmFR2rCGx2abcTr4SZ_sUxugInfS5po7izJR5ZNRPOx_XVz2eyNu5b2MmoWB2Wn/exec'; </script>
 <script>
 let members=[], selectedMember=null, scanTarget='', scanner=null, qrValue='', qrInstance=null, busy=false;
 
@@ -123,7 +123,19 @@ function setToday(){ $('todayText').textContent=new Date().toLocaleDateString('t
 function loading(title='กำลังดำเนินการ...'){Swal.fire({title,text:'กรุณารอสักครู่',allowOutsideClick:false,didOpen:()=>Swal.showLoading()});}
 function err(e){busy=false;Swal.fire({icon:'error',title:'เกิดข้อผิดพลาด',text:e?.message||String(e)});}
 function ok(title,text=''){Swal.fire({icon:'success',title,text,timer:1800,showConfirmButton:false});}
-function call(fn,args=[],success=()=>{}){google.script.run.withSuccessHandler(success).withFailureHandler(err)[fn](...args);}
+async function call(fn,args=[],success=()=>{}){
+  try{
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action: fn, args: args})
+    });
+    if(!response.ok) throw new Error('เชื่อมต่อ Google Apps Script ไม่สำเร็จ ('+response.status+')');
+    const result = await response.json();
+    if(!result.success) throw new Error(result.message || 'เกิดข้อผิดพลาดจาก Server');
+    success(result.data);
+  }catch(e){err(e)}
+}
 
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
 $('hamb').onclick=()=> $('mobileMenu').classList.toggle('open');
